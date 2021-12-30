@@ -1,0 +1,67 @@
+name: Build OpenCV with QT+OGL Support for Windows
+
+on: push
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Qt + OpenCV version
+        run: |
+          echo qtver=5.15.2 >> $env:GITHUB_ENV
+          echo opencv_ver=4.5.1 >> $env:GITHUB_ENV
+
+      - name: Create folder
+        run: mkdir opencv-$env:opencv_ver\build_64
+
+      - name: Cache OpenCV
+        uses: actions/cache@v1
+        id: cache0
+        with:
+          path: opencv-${{ env.opencv_ver }}
+          key: ${{ runner.os }}OpenCV-${{ env.opencv_ver }}-BuildCaches
+
+      - name: Download OpenCV
+        uses: actions/checkout@v2
+        with:
+          repository: opencv/opencv
+          path: opencv
+          ref: ${{ env.opencv_ver }}
+
+      - name: Create env
+        run: echo OpenCV_DIR=opencv-${env:opencv_ver} >> $env:GITHUB_ENV
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v1
+        with:
+          path: C:\Qt
+          key: ${{ runner.os }}-Qt-${{ env.qtver }}-Cache
+
+      - name: Download Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          cached: ${{ steps.cache-qt.outputs.cache-hit }}
+          version: ${{ env.qtver }}
+          arch: win64_mingw81
+          dir: Qt
+          tools: tools_ifw,4.1.1,qt.tools.ifw.41 tools_qtcreator,5.0.2-0,qt.tools.qtcreator,qt.tools.
+
+      # Remote go brr
+      - name: Compile OpenCV
+        run: |
+          cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -D BUILD_JAVA=OFF -D WITH_QT=ON -D WITH_OPENGL=ON
+          cd $env:OpenCV_DIR\build_64
+          mingw32-make -j 9
+          mingw32-make install
+
+      - name: Upload Prebuilt OpenCV binaries
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name != 'pull_request'
+        run: echo done!
+        # gh release create $env:opencv_ver.a libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
