@@ -39,8 +39,8 @@ jobs:
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: Qt
-          key: ${{ runner.os }}-Qt-${{ env.qtver }}-Cache
+          path: buildbot\Qt
+          key: ${{ runner.os }}-Qt-${{ env.qtver }}-Caches
 
       - name: Download Qt
         uses: jurplel/install-qt-action@v2
@@ -48,7 +48,7 @@ jobs:
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           version: ${{ env.qtver }}
           arch: win64_mingw81
-          dir: Qt
+          dir: buildbot\Qt
           tools: tools_ifw,4.1.1,qt.tools.ifw.41 tools_qtcreator,5.0.2-0,qt.tools.qtcreator,qt.tools.
 
       # Remote go brr
