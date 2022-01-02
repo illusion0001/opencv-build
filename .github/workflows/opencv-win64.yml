@@ -39,7 +39,7 @@ jobs:
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: buildbot\Qt
+          path: D:\Qt
           key: ${{ runner.os }}-Qt-${{ env.qtver }}-Caches
 
       - name: Download Qt
@@ -48,7 +48,7 @@ jobs:
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
           version: ${{ env.qtver }}
           arch: win64_mingw81
-          dir: buildbot\Qt
+          dir: D:\Qt
           tools: tools_ifw,4.1.1,qt.tools.ifw.41 tools_qtcreator,5.0.2-0,qt.tools.qtcreator,qt.tools.
 
       # Remote go brr
