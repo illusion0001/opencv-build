@@ -16,7 +16,7 @@ jobs:
           echo opencv_ver=4.5.1 >> $env:GITHUB_ENV
 
       - name: Create folder
-        run: mkdir opencv-$env:opencv_ver\build_64
+        run: mkdir buildbot\opencv-${env:opencv_ver}\build_64
 
       - name: Cache OpenCV
         uses: actions/cache@v1
@@ -59,7 +59,14 @@ jobs:
           mingw32-make -j 9
           mingw32-make install
 
+      - name: Package Prebuilt OpenCV
+        run: |
+          $opencv_ver1=$env:opencv_ver
+          mkdir libbin
+
       - name: Upload Prebuilt OpenCV binaries
+          # cd libbin
+          # 7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
