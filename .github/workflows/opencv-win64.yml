@@ -35,6 +35,9 @@ jobs:
       - name: Create env
         run: echo OpenCV_DIR=opencv-${env:opencv_ver} >> $env:GITHUB_ENV
 
+      - name: where are my folders at
+        run: ls $env:OpenCV_DIR
+
       - name: Cache Qt
         id: cache-qt
         uses: actions/cache@v1
