@@ -36,7 +36,7 @@ jobs:
         run: echo OpenCV_DIR=opencv-${env:opencv_ver} >> $env:GITHUB_ENV
 
       - name: where are my folders at
-        run: ls $env:OpenCV_DIR
+        run: ls
 
       - name: Cache Qt
         id: cache-qt
