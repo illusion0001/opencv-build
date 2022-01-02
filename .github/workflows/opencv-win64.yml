@@ -34,8 +34,9 @@ jobs:
 
       - name: Create link
         run: |
-          New-Item -ItemType HardLink -Path D:\opencv-${env:opencv_ver} -Target buildbot\opencv-${env:opencv_ver}
+          Move-item buildbot\opencv-${env:opencv_ver} D:\
           echo OpenCV_DIR=D:\opencv-${env:opencv_ver} >> $env:GITHUB_ENV
+          ls D:\
           # fallback, InCase the clone path changes
 
       - name: Cache Qt
