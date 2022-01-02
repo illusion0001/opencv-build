@@ -22,7 +22,7 @@ jobs:
         uses: actions/cache@v1
         id: cache0
         with:
-          path: ${{ env.OpenCV_DIR }}
+          path: D:\opencv-${{ env.opencv_ver }}
           key: ${{ runner.os }}OpenCV-${{ env.opencv_ver }}-BuildCaches
 
       - name: Download OpenCV
