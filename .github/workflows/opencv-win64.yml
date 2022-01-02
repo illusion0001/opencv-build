@@ -34,7 +34,7 @@ jobs:
 
       - name: Create link
         run: |
-          New-Item -ItemType SymbolicLink -Path D:\opencv-${env:opencv_ver} -Target buildbot\opencv-${env:opencv_ver}
+          New-Item -ItemType SymbolicLink -Path buildbot\opencv-${env:opencv_ver} -Target D:\opencv-${env:opencv_ver}
           echo OpenCV_DIR=D:\opencv-${env:opencv_ver} >> $env:GITHUB_ENV
           ls D:\opencv-${env:opencv_ver}
           # fallback, InCase the clone path changes
