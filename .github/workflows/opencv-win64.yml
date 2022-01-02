@@ -39,7 +39,7 @@ jobs:
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: C:\Qt
+          path: Qt
           key: ${{ runner.os }}-Qt-${{ env.qtver }}-Cache
 
       - name: Download Qt
