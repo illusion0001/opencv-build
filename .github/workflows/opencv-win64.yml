@@ -41,7 +41,8 @@ jobs:
           -DWITH_OPENCL=ON `
           -DWITH_OPENCL_D3D11_NV=ON `
           -DWITH_OPENGL=ON `
-          -DWITH_DIRECTX=ON
+          -DWITH_DIRECTX=ON `
+          -DCMAKE_BUILD_TYPE="Release"
           cmake --build ${env:OpenCV_DIR}\build_64\
 
       - name: Package Prebuilt OpenCV
