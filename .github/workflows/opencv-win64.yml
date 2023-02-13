@@ -42,6 +42,17 @@ jobs:
           echo archive_path="${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z" >> $GITHUB_ENV
           ls D:\
 
+      - name: Install CUDA SDK
+        uses: Jimver/cuda-toolkit@v0.2.8
+        with:
+          cuda: '12.0.1'
+
+      - name: Verify if CUDA is installed
+      - run: |
+          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
+          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
+          nvcc -V
+
       - name: Compile OpenCV
         run: |
           cmake -G "Visual Studio 17 2022" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ `
@@ -61,8 +72,7 @@ jobs:
           -DWITH_DIRECTX=ON `
           -DWITH_CUDA=ON
           cd $env:OpenCV_DIR\build_64
-          mingw32-make -j 8
-          mingw32-make install
+          cmake --build ${env:OpenCV_DIR}\build_64\
 
       - name: Package Prebuilt OpenCV
         run: |
