@@ -9,7 +9,6 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -27,16 +26,14 @@ jobs:
       - name: Download OpenCV
         run: |
           mkdir C:\downloads
-          $opencv_ver1=$env:opencv_ver
-          curl -fL https://github.com/opencv/opencv/archive/${opencv_ver1}.zip -o C:\downloads\opencv-${opencv_ver1}.zip
-          curl -fL https://github.com/opencv/opencv_contrib/archive/$opencv_ver1.zip -o C:\downloads\opencv_contrib-${opencv_ver1}.zip
-          7z -r x C:\downloads\opencv-${opencv_ver1}.zip -oc:\downloads\
-          7z -r x C:\downloads\opencv_contrib-${opencv_ver1}.zip -oc:\downloads\
-          echo OpenCV_DIR="C:\downloads\opencv-${opencv_ver1}" >> $env:GITHUB_ENV
-          Remove-Item -Force C:\downloads\opencv-${opencv_ver1}.zip
-          Remove-Item -Force C:\downloads\opencv_contrib-${opencv_ver1}.zip
-          ls -R C:\downloads && false
-          # cmake -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-4.X.X/modules
+          curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
+          curl -fL https://github.com/opencv/opencv_contrib/archive/${env:opencv_ver}.zip -o C:\downloads\opencv_contrib-${env:opencv_ver}.zip
+          7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oc:\downloads\
+          7z -r x C:\downloads\opencv_contrib-${env:opencv_ver}.zip -oc:\downloads\
+          echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
+          Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}.zip
+          Remove-Item -Force C:\downloads\opencv_contrib-${env:opencv_ver}.zip
+          ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules\"
 
       - name: Install CUDA SDK
         uses: Jimver/cuda-toolkit@v0.2.8
@@ -68,7 +65,8 @@ jobs:
           -DWITH_OPENCL_D3D11_NV=ON `
           -DWITH_OPENGL=ON `
           -DWITH_DIRECTX=ON `
-          -DWITH_CUDA=ON
+          -DWITH_CUDA=ON `
+          -DOPENCV_EXTRA_MODULES_PATH="C:\downloads\opencv_contrib-${env:opencv_ver}\modules\"
           cmake --build ${env:OpenCV_DIR}\build_64\
 
       - name: Package Prebuilt OpenCV
