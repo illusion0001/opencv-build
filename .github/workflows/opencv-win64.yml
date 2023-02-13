@@ -24,15 +24,15 @@ jobs:
           key: ${{ runner.os }}OpenCV-BuildCache
 
       - name: Download OpenCV
+        if: steps.cache0.outputs.cache-hit != 'true'
         run: |
-          mkdir C:\downloads
+          mkdir C:\downloads || true
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
           7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oc:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
           Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}.zip
 
       - name: Compile OpenCV
-        if: steps.cache0.outputs.cache-hit != 'true'
         run: |
           mkdir $env:OpenCV_DIR\build_64
           cmake -G "Visual Studio 17 2022" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ `
