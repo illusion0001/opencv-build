@@ -29,10 +29,15 @@ jobs:
           mkdir C:\downloads
           $opencv_ver1=$env:opencv_ver
           curl -fL https://github.com/opencv/opencv/archive/${opencv_ver1}.zip -o C:\downloads\opencv-${opencv_ver1}.zip
+          curl -fL https://github.com/opencv/opencv_contrib/archive/$opencv_ver1.zip -o C:\downloads\opencv_contrib-${opencv_ver1}.zip
           7z -r x C:\downloads\opencv-${opencv_ver1}.zip -oc:\downloads\
+          7z -r x C:\downloads\opencv_contrib-${opencv_ver1}.zip -oc:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${opencv_ver1}" >> $env:GITHUB_ENV
           Remove-Item -Force C:\downloads\opencv-${opencv_ver1}.zip
-          
+          Remove-Item -Force C:\downloads\opencv_contrib-${opencv_ver1}.zip
+          ls -R && false
+          # cmake -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-4.X.X/modules
+
       - name: Install CUDA SDK
         uses: Jimver/cuda-toolkit@v0.2.8
         with:
