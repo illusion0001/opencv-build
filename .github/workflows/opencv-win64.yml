@@ -36,7 +36,7 @@ jobs:
       - name: Install CUDA SDK
         uses: Jimver/cuda-toolkit@v0.2.8
         with:
-          cuda: '12.0.1'
+          cuda: '11.7.0'
 
       - name: Verify if CUDA is installed
         run: |
