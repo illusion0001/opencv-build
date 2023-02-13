@@ -40,24 +40,22 @@ jobs:
           Move-item buildbot\opencv-${env:opencv_ver} D:\
           echo OpenCV_DIR=D:\opencv-${env:opencv_ver} >> $env:GITHUB_ENV
           ls D:\
-          # fallback, InCase the clone path changes
 
       - name: Compile OpenCV
         run: |
           cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -DBUILD_opencv_core=ON -DBUILD_opencv_features2d=ON -DBUILD_opencv_calib3d=ON -DBUILD_opencv_flann=ON -DBUILD_opencv_imgproc=ON -DBUILD_opencv_video=ON -DBUILD_opencv_videoio=ON -DBUILD_opencv_videoio=ON -DBUILD_opencv_highgui=ON -DBUILD_opencv_world=ON -DWITH_OPENCL=ON -DWITH_OPENCL_D3D11_NV=ON -DWITH_OPENGL=ON -DWITH_DIRECTX=ON
           cd $env:OpenCV_DIR\build_64
-          mingw32-make -j 9
+          mingw32-make -j 8
           mingw32-make install
 
       - name: Package Prebuilt OpenCV
         run: |
-          $opencv_ver1=$env:opencv_ver
           mkdir libbin
           cd libbin
-          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
+          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z -m0=LZMA2 -mx9
 
       - name: Upload Prebuilt OpenCV binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
-        run: gh release create $env:opencv_ver.a libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
+        run: gh release create $env:opencv_ver ${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
