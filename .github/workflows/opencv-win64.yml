@@ -42,8 +42,10 @@ jobs:
           -DWITH_OPENCL_D3D11_NV=ON `
           -DWITH_OPENGL=ON `
           -DWITH_DIRECTX=ON `
-          -DCMAKE_BUILD_TYPE="Release"
-          cmake --build ${env:OpenCV_DIR}\build_64\
+          -DCMAKE_BUILD_TYPE="Release" `
+          -DCMAKE_INSTALL_PREFIX="C:\opencv-test\"
+          mkdir "C:\opencv-test\"
+          cmake --build "${env:OpenCV_DIR}\build_64\"  --target install --config release
 
       - name: Package Prebuilt OpenCV
         run: |
