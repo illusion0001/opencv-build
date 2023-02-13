@@ -27,13 +27,9 @@ jobs:
         run: |
           mkdir C:\downloads
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
-          curl -fL https://github.com/opencv/opencv_contrib/archive/${env:opencv_ver}.zip -o C:\downloads\opencv_contrib-${env:opencv_ver}.zip
           7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oc:\downloads\
-          7z -r x C:\downloads\opencv_contrib-${env:opencv_ver}.zip -oc:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
           Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}.zip
-          Remove-Item -Force C:\downloads\opencv_contrib-${env:opencv_ver}.zip
-          ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules\"
 
       - name: Compile OpenCV
         if: steps.cache0.outputs.cache-hit != 'true'
