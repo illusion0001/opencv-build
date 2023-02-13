@@ -40,7 +40,7 @@ jobs:
 
       - name: Compile OpenCV
         run: |
-          cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -D WITH_OPENGL=ON -D WITH_OPENCL_D3D11_NV=ON -D WITH_DIRECTX=ON
+          cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -DBUILD_opencv_core=ON -DBUILD_opencv_features2d=ON -DBUILD_opencv_flann=ON -DBUILD_opencv_imgproc=ON -DBUILD_opencv_video=ON -DBUILD_opencv_videoio=ON -DBUILD_opencv_videoio=ON -DBUILD_opencv_highgui=ON -DBUILD_opencv_world=ON -DWITH_OPENCL=ON -DWITH_OPENCL_D3D11_NV=ON -DWITH_OPENGL=ON -DWITH_DIRECTX=ON
           cd $env:OpenCV_DIR\build_64
           mingw32-make -j 9
           mingw32-make install
