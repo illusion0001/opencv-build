@@ -55,4 +55,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
-        run: gh release create $env:opencv_ver libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
+        run: |
+          $CommitHash = git rev-parse --short=8 HEAD
+          gh release create ${env:opencv_ver}-${CommitHash} libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
