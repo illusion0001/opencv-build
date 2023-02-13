@@ -16,17 +16,9 @@ jobs:
       - name: Set OpenCV Version
         run: echo opencv_ver="4.7.0" >> $env:GITHUB_ENV
 
-      - name: Cache OpenCV
-        uses: actions/cache@v3
-        id: cache0
-        with:
-          path: C:\downloads\opencv-${{ env.opencv_ver }}
-          key: ${{ runner.os }}OpenCV-BuildCache
-
       - name: Download OpenCV
-        if: steps.cache0.outputs.cache-hit != 'true'
         run: |
-          mkdir C:\downloads || true
+          mkdir C:\downloads
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
           7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oc:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
@@ -64,4 +56,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
         run: gh release create $env:opencv_ver libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
-
