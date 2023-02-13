@@ -8,25 +8,24 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set Qt + OpenCV version
+      - name: Set OpenCV version
         run: |
-          echo qtver=5.15.2 >> $env:GITHUB_ENV
-          echo opencv_ver=4.5.1 >> $env:GITHUB_ENV
+          echo opencv_ver=4.7.0 >> $env:GITHUB_ENV
 
       - name: Create folder
         run: mkdir buildbot\opencv-${env:opencv_ver}\build_64
 
       - name: Cache OpenCV
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         id: cache0
         with:
           path: D:\opencv-${{ env.opencv_ver }}
           key: ${{ runner.os }}OpenCV-${{ env.opencv_ver }}-BuildCaches
 
       - name: Download OpenCV
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: opencv/opencv
           path: buildbot\opencv-${{ env.opencv_ver }}
@@ -39,26 +38,9 @@ jobs:
           ls D:\
           # fallback, InCase the clone path changes
 
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1
-        with:
-          path: D:\Qt
-          key: ${{ runner.os }}-Qt-${{ env.qtver }}-Caches
-
-      - name: Download Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
-          version: ${{ env.qtver }}
-          arch: win64_mingw81
-          dir: D:\Qt
-          tools: tools_ifw,4.1.1,qt.tools.ifw.41 tools_qtcreator,5.0.2-0,qt.tools.qtcreator,qt.tools.
-
-      # Remote go brr
       - name: Compile OpenCV
         run: |
-          cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -D BUILD_JAVA=OFF -D WITH_QT=ON -D WITH_OPENGL=ON
+          cmake -G "MinGW Makefiles" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ -D BUILD_JAVA=OFF -D WITH_OPENGL=ON
           cd $env:OpenCV_DIR\build_64
           mingw32-make -j 9
           mingw32-make install
@@ -67,13 +49,11 @@ jobs:
         run: |
           $opencv_ver1=$env:opencv_ver
           mkdir libbin
+          cd libbin
+          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
 
       - name: Upload Prebuilt OpenCV binaries
-          # cd libbin
-          # 7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
-        run: echo done!
-        # gh release create $env:opencv_ver.a libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
-        # Todo restore archiving step
+        run: gh release create $env:opencv_ver.a libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
