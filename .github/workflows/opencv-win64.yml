@@ -49,6 +49,7 @@ jobs:
 
       - name: Package Prebuilt OpenCV
         run: |
+          ls "D:\opencv-test\"
           $opencv_ver1=$env:opencv_ver
           mkdir libbin
           cd c:\downloads
@@ -60,4 +61,4 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           $CommitHash = git rev-parse --short=8 HEAD
-          gh release create ${env:opencv_ver}-${CommitHash} libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
+          # gh release create ${env:opencv_ver}-${CommitHash} libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
