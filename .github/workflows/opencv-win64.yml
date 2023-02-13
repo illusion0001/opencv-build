@@ -39,6 +39,7 @@ jobs:
         run: |
           Move-item buildbot\opencv-${env:opencv_ver} D:\
           echo OpenCV_DIR=D:\opencv-${env:opencv_ver} >> $env:GITHUB_ENV
+          echo archive_path="${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z" >> $GITHUB_ENV
           ls D:\
 
       - name: Compile OpenCV
@@ -52,10 +53,10 @@ jobs:
         run: |
           mkdir libbin
           cd libbin
-          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z -m0=LZMA2 -mx9
+          7z a ${env:archive_path} -m0=LZMA2 -mx9
 
       - name: Upload Prebuilt OpenCV binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
-        run: gh release create $env:opencv_ver ${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
+        run: gh release create $env:opencv_ver ${env:archive_path} --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows" || true
