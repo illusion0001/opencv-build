@@ -35,7 +35,7 @@ jobs:
           echo OpenCV_DIR="C:\downloads\opencv-${opencv_ver1}" >> $env:GITHUB_ENV
           Remove-Item -Force C:\downloads\opencv-${opencv_ver1}.zip
           Remove-Item -Force C:\downloads\opencv_contrib-${opencv_ver1}.zip
-          ls -R && false
+          ls -R C:\downloads && false
           # cmake -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-4.X.X/modules
 
       - name: Install CUDA SDK
