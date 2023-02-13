@@ -14,47 +14,29 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Set OpenCV version
-        run: |
-          echo opencv_ver=4.7.0 >> $env:GITHUB_ENV
-
-      - name: Create folder
-        run: mkdir buildbot\opencv-${env:opencv_ver}\build_64
+      - name: Set OpenCV Version
+        run: echo opencv_ver="4.7.0" >> $env:GITHUB_ENV
 
       - name: Cache OpenCV
         uses: actions/cache@v3
         id: cache0
         with:
-          path: D:\opencv-${{ env.opencv_ver }}
-          key: ${{ runner.os }}OpenCV-${{ env.opencv_ver }}-BuildCaches
+          path: C:\downloads\opencv-${{ env.opencv_ver }}
+          key: ${{ runner.os }}OpenCV-BuildCache
 
       - name: Download OpenCV
-        uses: actions/checkout@v3
-        with:
-          repository: opencv/opencv
-          path: buildbot\opencv-${{ env.opencv_ver }}
-          ref: ${{ env.opencv_ver }}
-
-      - name: Create link
         run: |
-          Move-item buildbot\opencv-${env:opencv_ver} D:\
-          echo OpenCV_DIR=D:\opencv-${env:opencv_ver} >> $env:GITHUB_ENV
-          echo archive_path="${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z" >> $GITHUB_ENV
-          ls D:\
-
-      - name: Install CUDA SDK
-        uses: Jimver/cuda-toolkit@v0.2.8
-        with:
-          cuda: '12.0.1'
-
-      - name: Verify if CUDA is installed
-      - run: |
-          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
-          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
-          nvcc -V
+          mkdir C:\downloads
+          $opencv_ver1=$env:opencv_ver
+          curl -fL https://github.com/opencv/opencv/archive/${opencv_ver1}.zip -o C:\downloads\opencv-${opencv_ver1}.zip
+          7z -r x C:\downloads\opencv-${opencv_ver1}.zip -oc:\downloads\
+          echo OpenCV_DIR="C:\downloads\opencv-${opencv_ver1}" >> $env:GITHUB_ENV
+          Remove-Item -Force C:\downloads\opencv-${opencv_ver1}.zip
 
       - name: Compile OpenCV
+        if: steps.cache0.outputs.cache-hit != 'true'
         run: |
+          mkdir $env:OpenCV_DIR\build_64
           cmake -G "Visual Studio 17 2022" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ `
           -DBUILD_opencv_core=ON `
           -DBUILD_opencv_features2d=ON `
@@ -71,17 +53,18 @@ jobs:
           -DWITH_OPENGL=ON `
           -DWITH_DIRECTX=ON `
           -DWITH_CUDA=ON
-          cd $env:OpenCV_DIR\build_64
           cmake --build ${env:OpenCV_DIR}\build_64\
 
       - name: Package Prebuilt OpenCV
         run: |
+          $opencv_ver1=$env:opencv_ver
           mkdir libbin
-          cd libbin
-          7z a ${env:archive_path} -m0=LZMA2 -mx9
+          cd c:\downloads
+          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
 
       - name: Upload Prebuilt OpenCV binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
-        run: gh release create $env:opencv_ver ${env:archive_path} --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows" || true
+        run: gh release create $env:opencv_ver libbin\opencv-${env:opencv_ver}.7z --target $env:GITHUB_SHA -t "OpenCV ${env:opencv_ver} with QT+OGL Support for Windows"
+
