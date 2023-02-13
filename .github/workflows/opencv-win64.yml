@@ -39,7 +39,7 @@ jobs:
           cuda: '12.0.1'
 
       - name: Verify if CUDA is installed
-      - run: |
+        run: |
           echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
           echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
           nvcc -V
