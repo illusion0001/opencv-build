@@ -35,17 +35,6 @@ jobs:
           Remove-Item -Force C:\downloads\opencv_contrib-${env:opencv_ver}.zip
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules\"
 
-      - name: Install CUDA SDK
-        uses: Jimver/cuda-toolkit@v0.2.8
-        with:
-          cuda: '11.7.0'
-
-      - name: Verify if CUDA is installed
-        run: |
-          echo "Installed cuda version is: ${{steps.cuda-toolkit.outputs.cuda}}"
-          echo "Cuda install location: ${{steps.cuda-toolkit.outputs.CUDA_PATH}}"
-          nvcc -V
-
       - name: Compile OpenCV
         if: steps.cache0.outputs.cache-hit != 'true'
         run: |
@@ -65,8 +54,6 @@ jobs:
           -DWITH_OPENCL_D3D11_NV=ON `
           -DWITH_OPENGL=ON `
           -DWITH_DIRECTX=ON `
-          -DWITH_CUDA=ON `
-          -DOPENCV_EXTRA_MODULES_PATH="C:\downloads\opencv_contrib-${env:opencv_ver}\modules\"
           cmake --build ${env:OpenCV_DIR}\build_64\
 
       - name: Package Prebuilt OpenCV
