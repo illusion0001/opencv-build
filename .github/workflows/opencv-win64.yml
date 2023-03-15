@@ -3,8 +3,11 @@ name: Build OpenCV + Contrib for Windows
 on: push
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-${{ github.event_name  }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 jobs:
   build:
