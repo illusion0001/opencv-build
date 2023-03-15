@@ -1,4 +1,4 @@
-name: Build OpenCV with QT+OGL Support for Windows
+name: Build OpenCV + Contrib for Windows
 
 on: push
 
@@ -20,9 +20,16 @@ jobs:
         run: |
           mkdir C:\downloads
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
-          7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oc:\downloads\
+          curl -fL https://github.com/opencv/opencv_contrib/archive/refs/tags/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}-contrib.zip
+          7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oC:\downloads\
+          7z -r x C:\downloads\opencv-${env:opencv_ver}-contrib.zip -oC:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
+          echo Contrib_DIR="C:\downloads\opencv_contrib-${env:opencv_ver}" >> $env:GITHUB_ENV
+          ls "C:\downloads\opencv-${env:opencv_ver}"
+          ls "C:\downloads\opencv_contrib-${env:opencv_ver}"
+          ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules"
           Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}.zip
+          Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}-contrib.zip
 
       - name: Compile OpenCV
         run: |
@@ -45,7 +52,7 @@ jobs:
           -DCMAKE_BUILD_TYPE="Release" `
           -DCMAKE_INSTALL_PREFIX="C:\opencv-test\"
           mkdir "D:\opencv-test\"
-          cmake --build "${env:OpenCV_DIR}\build_64\"  --target install --config release
+          cmake --build "${env:OpenCV_DIR}\build_64\" -DOPENCV_EXTRA_MODULES_PATH=${env:Contrib_DIR}\modules --target install --config release
 
       - name: Package Prebuilt OpenCV
         run: |
