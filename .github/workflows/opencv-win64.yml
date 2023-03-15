@@ -53,17 +53,17 @@ jobs:
           -DWITH_OPENGL=ON `
           -DWITH_DIRECTX=ON `
           -DCMAKE_BUILD_TYPE="Release" `
-          -DCMAKE_INSTALL_PREFIX="C:\opencv-test\"
+          -DCMAKE_INSTALL_PREFIX="C:\opencv-test\" `
+          -DOPENCV_EXTRA_MODULES_PATH="${env:Contrib_DIR}\modules"
           mkdir "D:\opencv-test\"
-          cmake --build "${env:OpenCV_DIR}\build_64\" -DOPENCV_EXTRA_MODULES_PATH=${env:Contrib_DIR}\modules --target install --config release
+          cmake --build "${env:OpenCV_DIR}\build_64\" --target install --config release
 
       - name: Package Prebuilt OpenCV
         run: |
           ls "D:\opencv-test\"
-          $opencv_ver1=$env:opencv_ver
           mkdir libbin
           cd c:\downloads
-          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${opencv_ver1}.7z -m0=LZMA2 -mx9
+          7z a ${env:GITHUB_WORKSPACE}\libbin\opencv-${env:opencv_ver}.7z -m0=LZMA2 -mx9
 
       - name: Upload Prebuilt OpenCV binaries
         env:
