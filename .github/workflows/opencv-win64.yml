@@ -20,28 +20,24 @@ jobs:
         run: |
           echo opencv_ver="4.7.0" >> $env:GITHUB_ENV
           echo opencv_install="D:\opencv-test\" >> $env:GITHUB_ENV
-          echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
-          echo Contrib_DIR="C:\downloads\opencv_contrib-${env:opencv_ver}" >> $env:GITHUB_ENV
 
       - name: Download OpenCV
         run: |
+          echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
+          echo Contrib_DIR="C:\downloads\opencv_contrib-${env:opencv_ver}" >> $env:GITHUB_ENV
           mkdir C:\downloads
-          mkdir ${env:OpenCV_DIR}\build_64
-          mkdir "${env:opencv_install}"
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
           curl -fL https://github.com/opencv/opencv_contrib/archive/refs/tags/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}-contrib.zip
-          curl -fLOS https://gstreamer.freedesktop.org/data/pkg/windows/1.22.1/msvc/gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
-          curl -fLOS https://gstreamer.freedesktop.org/data/pkg/windows/1.22.1/msvc/gstreamer-1.0-msvc-x86_64-1.22.1.msi
           7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oC:\downloads\
           7z -r x C:\downloads\opencv-${env:opencv_ver}-contrib.zip -oC:\downloads\
           ls "C:\downloads\opencv-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules"
-          msiexec /package .\gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
-          msiexec /package .\gstreamer-1.0-msvc-x86_64-1.22.1.msi
 
       - name: Configure OpenCV
         run: |
+          mkdir ${env:OpenCV_DIR}\build_64
+          mkdir "${env:opencv_install}"
           cmake -G "Visual Studio 17 2022" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ `
           -DBUILD_opencv_core=ON `
           -DBUILD_opencv_features2d=ON `
