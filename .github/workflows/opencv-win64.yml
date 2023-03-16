@@ -26,6 +26,8 @@ jobs:
           mkdir C:\downloads
           curl -fL https://github.com/opencv/opencv/archive/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}.zip
           curl -fL https://github.com/opencv/opencv_contrib/archive/refs/tags/${env:opencv_ver}.zip -o C:\downloads\opencv-${env:opencv_ver}-contrib.zip
+          curl -fLOS https://gstreamer.freedesktop.org/data/pkg/windows/1.22.1/msvc/gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
+          curl -fLOS https://gstreamer.freedesktop.org/data/pkg/windows/1.22.1/msvc/gstreamer-1.0-msvc-x86_64-1.22.1.msi
           7z -r x C:\downloads\opencv-${env:opencv_ver}.zip -oC:\downloads\
           7z -r x C:\downloads\opencv-${env:opencv_ver}-contrib.zip -oC:\downloads\
           echo OpenCV_DIR="C:\downloads\opencv-${env:opencv_ver}" >> $env:GITHUB_ENV
@@ -33,8 +35,8 @@ jobs:
           ls "C:\downloads\opencv-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules"
-          Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}.zip
-          Remove-Item -Force C:\downloads\opencv-${env:opencv_ver}-contrib.zip
+          gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
+          gstreamer-1.0-msvc-x86_64-1.22.1.msi
 
       - name: Compile OpenCV
         run: |
