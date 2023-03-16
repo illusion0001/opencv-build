@@ -35,8 +35,8 @@ jobs:
           ls "C:\downloads\opencv-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}"
           ls "C:\downloads\opencv_contrib-${env:opencv_ver}\modules"
-          .\gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
-          .\gstreamer-1.0-msvc-x86_64-1.22.1.msi
+          msiexec /package .\gstreamer-1.0-devel-msvc-x86_64-1.22.1.msi
+          msiexec /package .\gstreamer-1.0-msvc-x86_64-1.22.1.msi
 
       - name: Compile OpenCV
         run: |
