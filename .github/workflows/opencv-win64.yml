@@ -38,6 +38,7 @@ jobs:
         run: |
           mkdir ${env:OpenCV_DIR}\build_64
           mkdir "${env:opencv_install}"
+          mkdir "${env:opencv_install}\pdb"
           cmake -G "Visual Studio 17 2022" -S ${env:OpenCV_DIR}\ -B ${env:OpenCV_DIR}\build_64\ `
           -DBUILD_opencv_core=ON `
           -DBUILD_opencv_features2d=ON `
@@ -62,7 +63,7 @@ jobs:
       - name: Build OpenCV
         run: |
           cmake --build "${env:OpenCV_DIR}\build_64\" --target install --config release
-          ls -R *.pdb
+          Copy-Item -Path ".\*.pdb" -Destination "${env:opencv_install}\pdb" -Recurse -Force
 
       - name: Package Prebuilt OpenCV
         working-directory: ${{ env.opencv_install }}
