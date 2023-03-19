@@ -60,7 +60,9 @@ jobs:
           -DOPENCV_EXTRA_MODULES_PATH="${env:Contrib_DIR}\modules"
 
       - name: Build OpenCV
-        run: cmake --build "${env:OpenCV_DIR}\build_64\" --target install --config release
+        run: |
+          cmake --build "${env:OpenCV_DIR}\build_64\" --target install --config release
+          ls -R *.pdb
 
       - name: Package Prebuilt OpenCV
         working-directory: ${{ env.opencv_install }}
