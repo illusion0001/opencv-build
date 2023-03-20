@@ -63,7 +63,10 @@ jobs:
       - name: Build OpenCV
         run: |
           cmake --build "${env:OpenCV_DIR}\build_64\" --target install --config release
-          Copy-Item -Path ".\" -Include "*.pdb" -Destination "${env:opencv_install}\pdb" -Recurse -Force -PassThru
+          # Copy-Item -Path ".\" -Include "*.pdb" -Destination "${env:opencv_install}\pdb" -Recurse -Force -PassThru
+
+      - name: list pdb
+        run: ls -R *.pdb
 
       - name: Package Prebuilt OpenCV
         working-directory: ${{ env.opencv_install }}
